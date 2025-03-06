@@ -1,0 +1,33 @@
+name: Test, Build and Release apk
+on:
+  push
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '17.x'
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.27.4
+    - name: Install Flutter Dependencies
+      run: flutter pub get
+    - name: Run Flutter Tests
+      run: flutter test
+    - name: Build Debug APK
+      run: flutter build apk --debug --split-per-abi
+    - run: flutter build appbundle --debug 
+    # - run: flutter build web
+    # - run: flutter build windows
+    # - run: flutter build linux
+    # - name: Push Debug APK to Releases
+    #   uses: ncipollo/release-action@v1
+    #   with:
+    #     artifacts: "build/app/outputs/apk/debug/*.apk"
+    #     token: ${{ secrets.TOKEN }}
